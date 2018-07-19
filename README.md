@@ -1,6 +1,7 @@
 # Media Center #
 
-[Demo Video]https://youtu.be/0Tgr5nUBEe0
+Demo Video: <https://youtu.be/0Tgr5nUBEe0>
+
 This application is meant for people that store a lot of movies on their computer and want a simple and elegant way to store them on a simple Netflix-like platform.
 With this program, users can add movies by telling the path to the movie on their hard drive and entering the IMDb link to the movie, so it can gather information for display on the sidebar.
 Once a movie is added into the program, it can be played, downloaded back onto the hard drive, or deleted.
