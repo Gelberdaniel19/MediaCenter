@@ -1,0 +1,116 @@
+.split-pane {
+    -fx-background-color: #1d1d20;
+    -fx-padding: -5;
+}
+.split-pane:horizontal > .split-pane-divider {
+   -fx-background-color: #222226;
+}
+
+.label {
+    -fx-text-fill: #DDDDCC;
+    -fx-font-family: 'Raleway Bold';
+}
+#activeTitle {
+    -fx-font-family: 'Raleway Thin';
+    -fx-font-size: 40px;
+}
+#activeInfo {
+    -fx-font-family: 'Raleway Bold';
+    -fx-font-size: 16px;
+}
+#activeDesc {
+    -fx-font-family: 'Raleway Light';
+    -fx-font-size: 18px;
+}
+
+.separator *.line {
+    -fx-border-width: 0 0 2 0;
+    -fx-border-color: #909080;
+}
+
+.text-field {
+    -fx-max-width: 300px;
+    -fx-background-color: transparent;
+    -fx-background-radius: 0px;
+    -fx-border-color: #DDDDCC;
+    -fx-border-width: 2px;
+    -fx-border-radius: 0px;
+    -fx-text-fill: #DDDDCC;
+}
+.text-field:focused {
+    -fx-background-color: #078FB7;
+}
+
+.button {
+    -fx-font-family: 'Raleway Medium';
+    -fx-text-fill: #DDDDCC;
+    -fx-pref-width: 150px;
+    -fx-background-color: transparent;
+    -fx-border-color: #DDDDCC;
+    -fx-border-width: 2px;
+    -fx-border-insets: 0px;
+    -fx-background-radius: 0px;
+}
+.button:hover {
+    -fx-cursor: hand;
+}
+.button:pressed {
+    -fx-cursor: move;
+}
+#clearBtn {
+    -fx-pref-width: 70px;
+}
+
+.progress-bar {
+    -fx-pref-width: 490px;
+    -fx-background-radius: 0px;
+}
+.progress-bar .track {
+    -fx-background-color: #222226;
+    -fx-background-radius: 0px;
+}
+.progress-bar .bar {
+    -fx-background-color: #078FB7;
+    -fx-background-radius: 0;
+}
+
+.menu-bar {
+    -fx-background-color: #222226;
+    -fx-text-fill: #DDDDCC;
+}
+.menu:selected {
+    -fx-background-color: #0000FF;
+}
+.context-menu {
+    -fx-background-color: #222226;
+}
+.menu-item {
+    -fx-text-fill: #DDDDCC;
+}
+
+.movie-icon {
+    -fx-max-width: 109px;
+    -fx-min-width: 109px;
+    -fx-max-height: 205px;
+    -fx-min-height: 205px;
+    -fx-alignment: center;
+    -fx-spacing: 5px;
+}
+.movie-icon:hover {
+    -fx-cursor: hand;
+}
+.movie-icon:pressed {
+    -fx-cursor: move;
+}
+.movie-icon .label {
+    -fx-font-size: 12px;
+    -fx-max-width: 95px;
+    -fx-min-height: 50px;
+    -fx-max-height: 50px;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+.movie-icon .image-view {
+    -fx-fit-width: 91px;
+    -fx-fit-height: 134px;
+}
