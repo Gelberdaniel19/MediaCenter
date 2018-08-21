@@ -14,4 +14,4 @@ After that, feel free to add movies as you wish. If when you add a movie, it tak
 
 ### About ###
 
-This app was mostly meant as a practice program for MVC design and JavaFX, as I have never implemented MVC in a legitimate project and I have never used the FXML portion of JavaFX before.
+This app was mostly meant as a practice program for MVC design and JavaFX, as I have never implemented MVC in a legitimate project and I have never used the FXML portion of JavaFX before. Happy coding!
