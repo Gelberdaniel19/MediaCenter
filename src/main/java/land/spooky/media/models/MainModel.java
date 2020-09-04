@@ -8,7 +8,6 @@ import javafx.concurrent.Task;
 
 import java.awt.*;
 import java.io.*;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +114,7 @@ public final class MainModel {
         }
 
         List<String> lines = IOHelper.readLines(persistingData);
-        if (lines.size() >= 1)
+        if (lines != null && lines.size() >= 1)
             targetDirectory = lines.get(0);
         else
             // This will make it so that if no target directory is set, no errors will occur
@@ -155,7 +154,7 @@ public final class MainModel {
     public void addMovie(String pathString, String IMDb) {
 
         // Instantiate scraper and if it fails, exit method
-        IMDbScraper scraper = null;
+        IMDbScraper scraper;
         try {
             scraper = new IMDbScraper(IMDb);
         } catch (IOException e) {
@@ -169,7 +168,6 @@ public final class MainModel {
         String info = scraper.getInfo();
         String desc = scraper.getDescription();
         String poster = scraper.getPoster();
-        MovieModel newMovie = new MovieModel(poster, title, year, info, desc);
 
         // Make list of lines to be saved to disk
         List<String> lines = new ArrayList<>();
@@ -179,8 +177,8 @@ public final class MainModel {
         lines.add(desc);
 
         // Save data on disk
-        String folderName = title + " " + year;
-        String folderPath = targetDirectory + "/" + folderName;
+        String folderPath = targetDirectory + "/" + title.replaceAll("[\\\\/:*?\"<>|]", "");
+        System.out.println("Folder path: " + folderPath);
         IOHelper.makeDirectory(new File(folderPath));
         IOHelper.downloadImage(new File(folderPath + "/poster"), poster);
         IOHelper.writeLines(new File(folderPath + "/info"), lines);
@@ -300,12 +298,10 @@ public final class MainModel {
     }
 
     /**
-     * Gets the maximum number of pages given the movies saved in the file system.
-     * @return max pages.
+     * Gets the list of files that match the current filter.
+     * @return List of files for movies which match the filter.
      */
-    public int getNumPages() {
-
-        if (targetDirectory.isEmpty()) return 1;
+    private ArrayList<File> getFilteredFiles() {
 
         File dir = new File(targetDirectory);
         File[] files = dir.listFiles();
@@ -317,6 +313,18 @@ public final class MainModel {
             if (filter.equals("") || file.getName().toLowerCase().contains(filter.toLowerCase()))
                 filteredFiles.add(file);
 
+        return filteredFiles;
+
+    }
+
+    /**
+     * Gets the maximum number of pages given the movies saved in the file system.
+     * @return max pages.
+     */
+    public int getNumPages() {
+
+        if (targetDirectory.isEmpty()) return 1;
+        ArrayList<File> filteredFiles = getFilteredFiles();
         return filteredFiles.size() / moviesPerPage + 1;
 
     }
@@ -349,15 +357,7 @@ public final class MainModel {
         // Stop if there is no target dir
         if (targetDirectory.isEmpty()) return;
 
-        File dir = new File(targetDirectory);
-        File[] files = dir.listFiles();
-
-        // Applies the filter from the user's search.
-        // Nothing changes if there is no search active.
-        ArrayList<File> filteredFiles = new ArrayList<>();
-        for (File file : files)
-            if (filter.equals("") || file.getName().toLowerCase().contains(filter.toLowerCase()))
-                filteredFiles.add(file);
+        ArrayList<File> filteredFiles = getFilteredFiles();
 
         // Fills the movie list by looping through the list of files. It skips the first however many
         // files based on what the active page is. Then, it iterates until it reaches the limit for
@@ -391,16 +391,7 @@ public final class MainModel {
      */
     public void pageUp() {
 
-        File dir = new File(targetDirectory);
-        File[] files = dir.listFiles();
-
-        // Applies the filter from the user's search.
-        // Nothing changes if there is no search active.
-        ArrayList<File> filteredFiles = new ArrayList<>();
-        for (File file : files)
-            if (filter.equals("") || file.getName().toLowerCase().contains(filter.toLowerCase()))
-                filteredFiles.add(file);
-
+        ArrayList<File> filteredFiles = getFilteredFiles();
         int totalMovies = filteredFiles.size();
         if (totalMovies > page * moviesPerPage)
             page++;
@@ -413,7 +404,7 @@ public final class MainModel {
      */
     public void playMovie() {
 
-        String pathToMovieDir = targetDirectory + "/" + activeMovie.getTitle() + " " + activeMovie.getYear();
+        String pathToMovieDir = targetDirectory + "/" + activeMovie.getTitle().replaceAll("[\\\\/:*?\"<>|]", "");
         File movieFile = new File(pathToMovieDir + "/movie");
 
         // isDesktopSupported and the Thread are necessary to open more than one movie.

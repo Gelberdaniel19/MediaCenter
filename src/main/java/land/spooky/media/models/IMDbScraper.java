@@ -67,6 +67,7 @@ public class IMDbScraper {
 
         Element yearWrapper = doc.getElementById("titleYear");
         return yearWrapper.child(0).text();
+
     }
 
     /**

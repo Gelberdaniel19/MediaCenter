@@ -1,15 +1,16 @@
 package land.spooky.media;
 
 import javafx.animation.*;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.transform.Translate;
 import javafx.stage.DirectoryChooser;
@@ -50,6 +51,7 @@ public class MainController {
     @FXML private SmoothButton clearBtn;
     @FXML private TextField searchBar;
     @FXML private VBox infoBox;
+    @FXML private BorderPane contentArea;
     private MainModel model;
 
 
@@ -195,16 +197,9 @@ public class MainController {
     /**
      * Add a movie to the model given a certain output path and IMDb link.
      * Update the display when done.
-     * @param event unused.
+     * @param movie the file which is the movie
      */
-    @FXML private void newMovie(ActionEvent event) {
-
-        // Get File of the new movie being added
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose the Movie");
-        File movie = fileChooser.showOpenDialog(movieGrid.getScene().getWindow());
-        if (movie == null)
-            return;
+    @FXML private void newMovie(File movie) {
 
         // Get IMDb link
         TextInputDialog dialog = new TextInputDialog();
@@ -217,6 +212,24 @@ public class MainController {
         // Pull data and add to disk
         model.addMovie(movie.toString(), link.get());
         updateMoviesDisplay("x");
+
+    }
+
+    /**
+     * Add a movie to the model given a certain file and an IMDb link.
+     * Update the display when done.
+     * @param event unused.
+     */
+    @FXML private void newMovie(ActionEvent event) {
+
+        // Get File of the new movie being added
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose the Movie");
+        File movie = fileChooser.showOpenDialog(movieGrid.getScene().getWindow());
+        if (movie == null)
+            return;
+
+        newMovie(movie);
 
     }
 
@@ -285,6 +298,49 @@ public class MainController {
                 nextPage();
         });
 
+        // DRAG AND DROP
+        // Dragging over the movie grid
+        contentArea.setOnDragOver(event -> {
+            if (event.getGestureSource() != movieGrid
+                    && event.getDragboard().hasFiles()
+                    && event.getDragboard().getFiles().size() == 1) {
+                event.acceptTransferModes(TransferMode.COPY);
+            }
+            event.consume();
+        });
+
+        contentArea.setOnDragEntered(event -> {
+            if (event.getGestureSource() != movieGrid
+                    && event.getDragboard().hasFiles()
+                    && event.getDragboard().getFiles().size() == 1) {
+                Color vColor = new Color(0.0274, .5607, 0.7176, 1);
+                Border border = new Border(
+                        new BorderStroke(vColor, BorderStrokeStyle.DASHED, new CornerRadii(50), new BorderWidths(10), new Insets(20)));
+                contentArea.setBorder(border);
+            }
+            event.consume();
+        });
+
+        contentArea.setOnDragExited(event -> {
+            contentArea.setBorder(Border.EMPTY);
+            event.consume();
+        });
+
+        movieGrid.setOnDragDropped(new EventHandler<DragEvent>() {
+
+            @Override
+            public void handle(DragEvent event) {
+                Dragboard db = event.getDragboard();
+                boolean success = db.hasFiles() && db.getFiles().size() == 1;
+                event.setDropCompleted(success);
+                event.consume();
+
+                if (success) {
+                    newMovie(db.getFiles().get(0));
+                }
+            }
+        });
+
     }
 
     /**
@@ -322,7 +378,7 @@ public class MainController {
             MovieModel activeMovie = model.getActiveMovie();
             if (activeMovie != null) {
                 activePoster.setImage(new Image("file:" + activeMovie.getPoster()));
-                activeTitle.setText(activeMovie.getTitle() + " " + activeMovie.getYear());
+                activeTitle.setText(activeMovie.getTitle());
                 activeInfo.setText(activeMovie.getInfo());
                 activeDesc.setText(activeMovie.getDescription());
                 fadeIn.play();
