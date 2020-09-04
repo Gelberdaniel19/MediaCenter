@@ -320,11 +320,13 @@ public class MainController {
         // Change info
         fadeOut.setOnFinished(e -> {
             MovieModel activeMovie = model.getActiveMovie();
-            activePoster.setImage(new Image("file:" + activeMovie.getPoster()));
-            activeTitle.setText(activeMovie.getTitle() + " " + activeMovie.getYear());
-            activeInfo.setText(activeMovie.getInfo());
-            activeDesc.setText(activeMovie.getDescription());
-            fadeIn.play();
+            if (activeMovie != null) {
+                activePoster.setImage(new Image("file:" + activeMovie.getPoster()));
+                activeTitle.setText(activeMovie.getTitle() + " " + activeMovie.getYear());
+                activeInfo.setText(activeMovie.getInfo());
+                activeDesc.setText(activeMovie.getDescription());
+                fadeIn.play();
+            }
         });
 
         // Begin process

@@ -283,6 +283,8 @@ public final class MainModel {
      */
     public int getNumPages() {
 
+        if (targetDirectory.isEmpty()) return 1;
+
         File dir = new File(targetDirectory);
         File[] files = dir.listFiles();
 
@@ -322,6 +324,9 @@ public final class MainModel {
      * movieList and refills it with the necessary MovieModels.
      */
     public void loadMovieList() {
+        // Stop if there is no target dir
+        if (targetDirectory.isEmpty()) return;
+
         File dir = new File(targetDirectory);
         File[] files = dir.listFiles();
 

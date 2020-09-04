@@ -38,15 +38,19 @@ public class MediaCenter extends Application {
 	 * @param primaryStage main window.
 	 */
 	@Override
-	public void start(Stage primaryStage) throws IOException {
+	public void start(Stage primaryStage) {
 
-		Parent root = FXMLLoader.load(getClass().getResource("/fxml/MediaCenter.fxml"));
-	    Scene scene = new Scene(root, 1600, 900);
-        scene.getStylesheets().add("css/style.css");
-		primaryStage.setScene(scene);
-        primaryStage.setMinWidth(1500);
-        primaryStage.setMinHeight(800);
-		primaryStage.show();
+		try {
+			Parent root = FXMLLoader.load(getClass().getResource("/fxml/MediaCenter.fxml"));
+			Scene scene = new Scene(root, 1600, 900);
+			scene.getStylesheets().add("css/style.css");
+			primaryStage.setScene(scene);
+			primaryStage.setMinWidth(1500);
+			primaryStage.setMinHeight(800);
+			primaryStage.show();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
