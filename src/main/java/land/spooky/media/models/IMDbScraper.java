@@ -2,6 +2,7 @@ package land.spooky.media.models;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -64,23 +65,8 @@ public class IMDbScraper {
      */
     public String getYear() {
 
-        Elements titleWrapper = doc.getElementsByClass("title_wrapper");
-        // There should always only be one
-        if (titleWrapper.size() != 1)
-            return null;
-        Elements titleH1 = titleWrapper.get(0).getElementsByTag("h1");
-        // There should be at least one
-        if (titleH1.size() == 0)
-            return null;
-        String titleYear = titleH1.get(0).text();
-
-        // Separate the year from the title. The way the Document gets the data causes
-        // the space between the title and year to be char=160, which is a non-breaking
-        // space. The rest of the spaces are normal. Therefore the string can be split
-        // by char 160.
-        String[] titleYearWords = titleYear.split(Character.toString((char)160));
-        return titleYearWords[1];
-
+        Element yearWrapper = doc.getElementById("titleYear");
+        return yearWrapper.child(0).text();
     }
 
     /**

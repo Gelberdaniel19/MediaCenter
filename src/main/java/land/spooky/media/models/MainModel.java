@@ -8,6 +8,8 @@ import javafx.concurrent.Task;
 
 import java.awt.*;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -90,7 +92,27 @@ public final class MainModel {
      */
     private void loadTargetDirectory() {
 
-        File persistingData = new File(getClass().getClassLoader().getResource("persisting/targetDirectory.txt").getFile());
+        // Get directory containing JAR
+        String name = this.getClass().getName().replace('.', '/');
+        String s = this.getClass().getResource("/" + name + ".class").toString();
+        File persistingData;
+        if (s.contains(".jar")) {
+            s = s.replace('/', File.separatorChar);
+            s = s.substring(0, s.indexOf(".jar") + 4);
+            s = s.substring(s.lastIndexOf(':') - 1);
+            String JARDirString = s.substring(0, s.lastIndexOf(File.separatorChar) + 1);
+
+            // Get path to targetDirectory.txt
+            persistingData = Paths.get(JARDirString, "targetDirectory.txt").toFile();
+            if (!persistingData.exists())
+                try {
+                    persistingData.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        } else {
+            persistingData = new File(getClass().getClassLoader().getResource("persisting/targetDirectory.txt").getFile());
+        }
 
         List<String> lines = IOHelper.readLines(persistingData);
         if (lines.size() >= 1)
@@ -462,13 +484,27 @@ public final class MainModel {
      */
     public void setTargetDirectory(String targetDirectory) {
 
-        // Get the persisting file
-        File persisting = new File(getClass().getClassLoader().getResource("persisting/targetDirectory.txt").getFile());
+        // Get directory containing JAR
+        String name = this.getClass().getName().replace('.', '/');
+        String s = this.getClass().getResource("/" + name + ".class").toString();
+        s = s.replace('/', File.separatorChar);
+        s = s.substring(0, s.indexOf(".jar")+4);
+        s = s.substring(s.lastIndexOf(':')-1);
+        String JARDirString = s.substring(0, s.lastIndexOf(File.separatorChar)+1);
+
+        // Get path to targetDirectory.txt
+        File persistingData = Paths.get(JARDirString, "targetDirectory.txt").toFile();
+        if (!persistingData.exists())
+            try {
+                persistingData.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         // Writes the targetDirectory onto the persisting file
         List<String> target = new ArrayList<>();
         target.add(targetDirectory);
-        IOHelper.writeLines(persisting, target);
+        IOHelper.writeLines(persistingData, target);
 
         // Refresh
         this.targetDirectory = targetDirectory;
